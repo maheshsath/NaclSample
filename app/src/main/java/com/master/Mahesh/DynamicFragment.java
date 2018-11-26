@@ -13,16 +13,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 
-public class DynamicFragment extends Fragment
-{
-    String TAG="DynamicFragment";
+public class DynamicFragment extends Fragment {
+    String TAG = "DynamicFragment";
     private RecyclerView rv;
     int position;
     ArrayList<MyDataLiust> data;
+   public static MyAdapterRecyclerview ro;
+    private int data_test;
+
 
     public static DynamicFragment newInstance() {
         return new DynamicFragment();
@@ -31,6 +34,8 @@ public class DynamicFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate");
+
 
     }
 
@@ -39,20 +44,23 @@ public class DynamicFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dynamic_fragment_layout, container, false);
         initViews(view);
+        Log.e(TAG, "onCreateView");
+
         return view;
     }
 
     private void initViews(View view) {
 
-         position = getArguments().getInt("position");
-        TextView textView=view.findViewById(R.id.commonTextView);
-        ListView ll=view.findViewById(R.id.ll);
-        Button sample=view.findViewById(R.id.sample);
-        rv=view.findViewById(R.id.rr);
-        textView.setText(String.valueOf("Category :  "+getArguments().getInt("position")));
+        position = getArguments().getInt("position");
+        TextView textView = view.findViewById(R.id.commonTextView);
+        ListView ll = view.findViewById(R.id.ll);
+        Button sample = view.findViewById(R.id.sample);
+        rv = view.findViewById(R.id.rr);
+        textView.setText(String.valueOf("Category :  " + getArguments().getInt("position")));
 
 
-        ArrayList<String> m=new ArrayList<>();
+
+        ArrayList<String> m = new ArrayList<>();
 
         m.add("1");
         m.add("2");
@@ -61,7 +69,7 @@ public class DynamicFragment extends Fragment
 /*
         MyAdpter ma=new MyAdpter(getContext(),m);
         ll.setAdapter(ma);*/
-        final MyAdapterRecyclerview ro;
+
         ro = new MyAdapterRecyclerview(getContext(), R.layout.inflator_item_list, m);
 
 
@@ -69,15 +77,16 @@ public class DynamicFragment extends Fragment
         rv.setItemViewCacheSize(m.size());
         rv.setAdapter(ro);
 
+        data_test = ro.getData1();
+        data = ro.getData();
         sample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                data=ro.getData();
+                data = ro.getData();
 
-                Log.e(TAG,"data"+data.get(0).getVal1()+"====="+data.get(0).getVal2()+"======"+data.get(0).getVal3());
+                Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());
             }
         });
-
 
 
     }
@@ -85,17 +94,19 @@ public class DynamicFragment extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.e(TAG, "onActivityCreated");
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.e(TAG, "onAttach");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e(TAG,"onPause");
+        Log.e(TAG, "onPause");
 
 
     }
@@ -103,30 +114,47 @@ public class DynamicFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG,"onResume");
-        Log.e(TAG,"tab position"+position);
+        Log.e(TAG, "onResume");
+        Log.e(TAG, "tab position" + position);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.e(TAG,"onStop");
+        Log.e(TAG, "onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e(TAG,"onDestroyView");
+        Log.e(TAG, "onDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e(TAG,"onDestroy");
+        Log.e(TAG, "onDestroy");
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
 
-    public ArrayList<MyDataLiust> savedata() {
-        return data;
+           /* if (isVisibleToUser) {
+                Log.e(TAG, "Don't save data right now because fragment in visible to user");
+            } else {
+                Log.e(TAG, "save data right now because fragment no more visible to user");
+                Log.e(TAG,"this is from fragment"+ data_test);
+
+            }
+*/
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+    public void getData1(){
+        //Toast.makeText(getActivity(), "this is from fragment", Toast.LENGTH_SHORT).show();
+        Log.e(TAG,"this is from fragment"+ data_test);
+
+       /* for(int i =0 ;i<=10;i++){
+            Log.e(TAG,"this is from fragment"+i);
+        }*/
     }
 }

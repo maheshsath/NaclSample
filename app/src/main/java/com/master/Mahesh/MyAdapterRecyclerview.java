@@ -4,15 +4,22 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.master.Mahesh.callBack.CallBackListener;
+
 import java.util.ArrayList;
 
-public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecyclerview.MyViewHolder> implements MyInterfacs{
+import static android.content.ContentValues.TAG;
+
+public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecyclerview.MyViewHolder>{
+
+    String TAG = "MyAdapterRecyclerview";
 
     Context context;
     int item;
@@ -35,16 +42,6 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
 
 
     }
-
-    @Override
-    public ArrayList<MyDataLiust> getData() {
-        return totaldata;
-    }
-
-//    public List<HarvastDetails> getHarvastDetailsList() {
-//
-//
-//    }
 
     class  MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -224,14 +221,16 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
             }
         });
 
+    }
 
-
+    public ArrayList<MyDataLiust> getData() {
+        return totaldata;
+    }
+    public int getData1() {
+        return 30;
     }
 
     private int doSum(int position) {
-
-
-
         int sum=totaldata.get(position).getVal1()+totaldata.get(position).getVal2()+totaldata.get(position).getVal3();
         return sum;
     }
@@ -243,9 +242,37 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
     }
 
 
+    @Override
+    public void onViewDetachedFromWindow(MyViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        Log.e(TAG,"onViewDetachedFromWindow");
+        saveData("onViewDetachedFromWindow");
+    }
 
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        Log.e(TAG,"onDetachedFromRecyclerView");
+        saveData("onDetachedFromRecyclerView");
+    }
 
+    private void saveData(String onViewDetachedFromWindow) {
+        Log.e(TAG, "===>>> "+"saveData "+onViewDetachedFromWindow);
+    }
 
+    private CallBackListener mCustomeListener;
+
+    public void setmCustomeListener(CallBackListener mCustomeListener){
+        this.mCustomeListener=mCustomeListener;
+        doSomeTask();
+    }
+    private void doSomeTask(){
+        //check if listener is set or not.
+        if(mCustomeListener == null)
+            return;
+        else
+            mCustomeListener.getData("sdafasdfafd  asdfasdfdfdfadf");
+    }
 
 }
 
