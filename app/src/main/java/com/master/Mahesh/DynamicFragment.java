@@ -1,6 +1,7 @@
 package com.master.Mahesh;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.master.Mahesh.room.RowDatabase;
+import com.master.Mahesh.room.RowEntity;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DynamicFragment extends Fragment {
@@ -24,7 +29,7 @@ public class DynamicFragment extends Fragment {
     int position;
     ArrayList<MyDataLiust> data;
    public static MyAdapterRecyclerview ro;
-    private int data_test;
+    private int data_test = 90;
 
 
     public static DynamicFragment newInstance() {
@@ -35,7 +40,6 @@ public class DynamicFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate");
-
 
     }
 
@@ -50,6 +54,8 @@ public class DynamicFragment extends Fragment {
     }
 
     private void initViews(View view) {
+
+        Log.e(TAG, " == >  initViews ");
 
         position = getArguments().getInt("position");
         TextView textView = view.findViewById(R.id.commonTextView);
@@ -77,14 +83,31 @@ public class DynamicFragment extends Fragment {
         rv.setItemViewCacheSize(m.size());
         rv.setAdapter(ro);
 
-        data_test = ro.getData1();
-        data = ro.getData();
+
+
         sample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                data = ro.getData();
+                //data = ro.getData();
+                //Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());
 
-                Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());
+                /**
+                 *  Insert and get data using Database Async way
+                 */
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Insert Data
+                        List<RowEntity> list = RowDatabase
+                                .getInstance(getActivity())
+                                .getRowDao()
+                                .getAllRow();
+
+                        Log.e(TAG,"list size is "+list.size());
+                        Log.e(TAG,"data of first list row3 is  "+list.get(2).getRow1());
+
+                    }
+                });
             }
         });
 
@@ -151,7 +174,10 @@ public class DynamicFragment extends Fragment {
     }
     public void getData1(){
         //Toast.makeText(getActivity(), "this is from fragment", Toast.LENGTH_SHORT).show();
-        Log.e(TAG,"this is from fragment"+ data_test);
+
+        Log.e(TAG,"this is from fragment  ==>>"+ data_test);
+       // Log.e(TAG,"this is from fragment"+   ro.getData());
+         ro.saveFrgData();
 
        /* for(int i =0 ;i<=10;i++){
             Log.e(TAG,"this is from fragment"+i);
