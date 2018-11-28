@@ -90,13 +90,17 @@ public class DynamicFragment extends Fragment {
         sample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*data = ro.getData();
-                Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());*/
+                data = ro.getData();
+
+                Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());
+                Log.e(TAG, "data" + data.get(1).getVal1() + "=====" + data.get(1).getVal2() + "======" + data.get(1).getVal3());
+                Log.e(TAG, "data" + data.get(2).getVal1() + "=====" + data.get(2).getVal2() + "======" + data.get(2).getVal3());
+                Log.e(TAG, "data size" + data.size());
 
                 /**
                  *  Insert and get data using Database Async way
                  */
-                AsyncTask.execute(new Runnable() {
+                /*AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
                         // Insert Data
@@ -116,7 +120,7 @@ public class DynamicFragment extends Fragment {
                         }
 
                     }
-                });
+                });*/
             }
         });
 

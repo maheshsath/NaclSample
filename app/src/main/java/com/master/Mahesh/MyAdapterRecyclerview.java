@@ -1,8 +1,6 @@
 package com.master.Mahesh;
 
 import android.content.Context;
-import android.inputmethodservice.Keyboard;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,32 +12,29 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.master.Mahesh.callBack.CallBackListener;
-import com.master.Mahesh.room.RowDatabase;
-import com.master.Mahesh.room.RowEntity;
 
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-
 public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecyclerview.MyViewHolder> {
 
+    public static ArrayList<MyDataLiust> returnData = new ArrayList<>();
+    public ArrayList<MyDataLiust> totaldata = new ArrayList<>();
+    public MyAdapterRecyclerview ro;
     String TAG = "MyAdapterRecyclerview";
-
     Context context;
     int item;
     ArrayList<String> data;
     String val1 = "0";
     String val2 = "0";
     String val3 = "0";
-    private int total = 0;
     Integer val11 = 0, val22 = 0, val33 = 0, val44;
-    public  ArrayList<MyDataLiust> totaldata = new ArrayList<>();
-    public static ArrayList<MyDataLiust> returnData = new ArrayList<>();
-    public  MyAdapterRecyclerview ro;
     int var = 30;
-
-    String row1,row2,row3,row4;
-
+    String row1, row2, row3, row4;
+    MyDataLiust m1;
+    MyDataLiust m2;
+    MyDataLiust m3;
+    private int total = 0;
+    private CallBackListener mCustomeListener;
 
     public MyAdapterRecyclerview(Context context, int lv_harvesting_item, ArrayList<String> hsd) {
         this.context = context;
@@ -47,23 +42,18 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
         this.data = hsd;
 
 
-    }
+        for (int i = 0; i < hsd.size(); i++) {
+            MyDataLiust m = new MyDataLiust();
+            m.setVal1(0);
+            m.setVal2(0);
+            m.setVal3(0);
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+            totaldata.add(m);
 
-        TextView line1, e1, e2, e3, e4;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-
-            line1 = (TextView) itemView.findViewById(R.id.one);
-            e1 = (EditText) itemView.findViewById(R.id.e1);
-            e2 = (EditText) itemView.findViewById(R.id.e2);
-            e3 = (EditText) itemView.findViewById(R.id.e3);
-            e4 = (EditText) itemView.findViewById(R.id.e4);
         }
-    }
 
+
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -75,14 +65,9 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-         /*row1 = holder.e1.getText().toString();
-         row2 = holder.e2.getText().toString();
-         row3 = holder.e3.getText().toString();
-         row4 = holder.e4.getText().toString();*/
 
         holder.line1.setText(data.get(position));
 
-        final MyDataLiust m1 = new MyDataLiust();
 
         holder.e1.addTextChangedListener(new TextWatcher() {
 
@@ -101,33 +86,8 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
             public void afterTextChanged(Editable editable) {
 
 
-                val1 = holder.e1.getText().toString().trim();
-
-                if (!val1.equalsIgnoreCase("")) {
-
-
-                    val11 = Integer.parseInt(val1);
-
-
-                    m1.setVal1(val11);
-                    //m1.setVal2(val22);
-                    // m1.setVal3(val33);
-                    totaldata.add(position, m1);
-                    total = doSum(position);
-                    m1.setVal4(total);
-                    totaldata.add(position,m1);
-                    holder.e4.setText("" + total);
-
-                } else if (val1.equalsIgnoreCase("")) {
-                    val11 = 0;
-                    m1.setVal1(val11);
-
-                    totaldata.add(position, m1);
-                    total = doSum(position);
-                    m1.setVal4(total);
-                    totaldata.add(position,m1);
-                    holder.e4.setText("" + total);
-                }
+                int data = doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
+                holder.e4.setText("" + data);
             }
 
         });
@@ -145,36 +105,10 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
 
             @Override
             public void afterTextChanged(Editable editable) {
-                val2 = holder.e2.getText().toString().trim();
-
-                if (!val2.equalsIgnoreCase("")) {
-
-                    val22 = Integer.parseInt(val2);
 
 
-                    //m1.setVal1(val11);
-                    m1.setVal2(val22);
-                    // m1.setVal3(val33);
-                    
-                    totaldata.add(position, m1);
-                    total = doSum(position);
-                    m1.setVal4(total);
-                    totaldata.add(position,m1);
-                    holder.e4.setText("" + total);
-                    Log.e(TAG, "afterTextChanged val22 (!val22.equalsIgnoreCase() ");
-                } else if (val2.equalsIgnoreCase("")) {
-                    val22 = 0;
-                    //m1.setVal1(val11);
-                    m1.setVal2(val22);
-                    //m1.setVal3(val33);
-                    
-                    totaldata.add(position, m1);
-                    total = doSum(position);
-                    m1.setVal4(total);
-                    totaldata.add(position,m1);
-                    holder.e4.setText("" + total);
-                }
-
+                int data = doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
+                holder.e4.setText("" + data);
 
             }
         });
@@ -193,39 +127,10 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
 
             @Override
             public void afterTextChanged(Editable editable) {
-                val3 = holder.e3.getText().toString().trim();
-
-                if (!val3.equalsIgnoreCase("")) {
 
 
-                    val33 = Integer.parseInt(val3);
-
-                    //m1.setVal1(val11);
-                    //m1.setVal2(val22);
-                    m1.setVal3(val33);
-                    
-
-                    totaldata.add(position, m1);
-                    total = doSum(position);
-                    m1.setVal4(total);
-                    totaldata.add(position,m1);
-                    holder.e4.setText("" + total);
-                    Log.e(TAG, "afterTextChanged val3 (!val3.equalsIgnoreCase() ");
-                } else if (val3.equalsIgnoreCase("")) {
-                    val33 = 0;
-
-                    //m1.setVal1(val11);
-                    //m1.setVal2(val22);
-                    m1.setVal3(val33);
-                    
-                    totaldata.add(position, m1);
-                    total = doSum(position);
-                    m1.setVal4(total);
-                    totaldata.add(position,m1);
-                    holder.e4.setText("" + total);
-
-                }
-
+                int data = doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
+                holder.e4.setText("" + data);
 
             }
         });
@@ -234,51 +139,58 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
         Log.e(TAG, "size ===>>> " + totaldata.size());
     }
 
+    private int doSumPro(int position, String val1, String val2, String val3) {
+        MyDataLiust m11 = new MyDataLiust();
+
+        int data1 = 0;
+        int data2 = 0;
+        int data3 = 0;
+        if (!val1.equalsIgnoreCase("")) {
+            data1 = Integer.parseInt(val1);
+            m11.setVal1(data1);
+        } else {
+            m11.setVal1(0);
+        }
+        if (!val2.equalsIgnoreCase("")) {
+            data2 = Integer.parseInt(val2);
+            m11.setVal2(data2);
+        } else {
+            m11.setVal2(0);
+        }
+        if (!val3.equalsIgnoreCase("")) {
+            data3 = Integer.parseInt(val3);
+            m11.setVal3(data3);
+        } else {
+            m11.setVal3(0);
+
+        }
+        int data4 = data1 + data2 + data3;
+
+
+        if (totaldata.size() > 0) {
+
+            try {
+                totaldata.remove(position);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        totaldata.add(position, m11);
+
+        return data4;
+
+
+    }
+
     public ArrayList<MyDataLiust> getData() {
         Log.e(TAG, "Total data list size is " + returnData.size());
         Log.e(TAG, " data list size is " + returnData.size());
-        return returnData;
+        return totaldata;
     }
 
-    public void addListToReturn(int val1,int val2,int val3,int val4,int pos){
-        MyDataLiust m = new MyDataLiust();
-        m.setVal1(val1);
-        m.setVal2(val2);
-        m.setVal3(val3);
-        m.setVal4(val4);
-
-        Log.e(TAG,"Size of return List size"+returnData.size());
-        Log.e(TAG,"position to add the data to the list "+pos);
-        if(returnData.size()==0){
-            returnData.add(pos,m);
-        }else{
-            if(pos==0){
-                returnData.remove(pos);
-                returnData.add(pos,m);
-            }else if(pos==1){
-                if(returnData.size()==1){
-                    returnData.add(pos,m);
-                }else{
-                    returnData.remove(pos);
-                    returnData.add(pos,m);
-                }
-            }else{
-                if(returnData.size()==2){
-                    returnData.add(pos,m);
-                }else{
-                    returnData.remove(pos);
-                    returnData.add(pos,m);
-                }
-            }
-        }
-    }
-
-
-    private int doSum(int position) {
-        int sum = totaldata.get(position).getVal1() + totaldata.get(position).getVal2() + totaldata.get(position).getVal3();
-        //addListToReturn(totaldata.get(position).getVal1(),totaldata.get(position).getVal2(),totaldata.get(position).getVal3(),sum,position);
-        return sum;
-    }
 
     @Override
     public int getItemCount() {
@@ -303,20 +215,19 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
     private void saveData(String onViewDetachedFromWindow) {
         Log.e(TAG, "===>>> " + "saveData " + onViewDetachedFromWindow);
     }
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
-    private CallBackListener mCustomeListener;
+        TextView line1, e1, e2, e3, e4;
 
-    public void setmCustomeListener(CallBackListener mCustomeListener) {
-        this.mCustomeListener = mCustomeListener;
-        doSomeTask();
-    }
+        public MyViewHolder(View itemView) {
+            super(itemView);
 
-    private void doSomeTask() {
-        //check if listener is set or not.
-        if (mCustomeListener == null)
-            return;
-        else
-            mCustomeListener.getData("sdafasdfafd  asdfasdfdfdfadf");
+            line1 = (TextView) itemView.findViewById(R.id.one);
+            e1 = (EditText) itemView.findViewById(R.id.e1);
+            e2 = (EditText) itemView.findViewById(R.id.e2);
+            e3 = (EditText) itemView.findViewById(R.id.e3);
+            e4 = (EditText) itemView.findViewById(R.id.e4);
+        }
     }
 
 }
