@@ -14,4 +14,7 @@ public interface RowDao {
 
     @Query("SELECT * FROM `row`")
     List<RowEntity> getAllRow();
+
+    @Query("SELECT id,row1,row2,row3,row4 FROM `row`")
+    public List<RowEntity> getAllUsers();
 }

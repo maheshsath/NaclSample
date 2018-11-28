@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.master.Mahesh.room.RowDatabase;
 import com.master.Mahesh.room.RowEntity;
@@ -28,18 +27,21 @@ public class DynamicFragment extends Fragment {
     private RecyclerView rv;
     int position;
     ArrayList<MyDataLiust> data;
-   public static MyAdapterRecyclerview ro;
+   public  MyAdapterRecyclerview ro;
     private int data_test = 90;
+    Context mContext = null;
 
 
     public static DynamicFragment newInstance() {
         return new DynamicFragment();
+
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate");
+        mContext = getActivity();
 
     }
 
@@ -88,8 +90,8 @@ public class DynamicFragment extends Fragment {
         sample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //data = ro.getData();
-                //Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());
+                /*data = ro.getData();
+                Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());*/
 
                 /**
                  *  Insert and get data using Database Async way
@@ -99,12 +101,19 @@ public class DynamicFragment extends Fragment {
                     public void run() {
                         // Insert Data
                         List<RowEntity> list = RowDatabase
-                                .getInstance(getActivity())
+                                .getInstance(getActivity().getApplicationContext())
                                 .getRowDao()
-                                .getAllRow();
+                                .getAllUsers();
 
                         Log.e(TAG,"list size is "+list.size());
-                        Log.e(TAG,"data of first list row3 is  "+list.get(2).getRow1());
+                        Log.e(TAG,"data of first list row3 is  "+list.get(0).getRow1());
+
+                        for(RowEntity li:list){
+                            Log.e(TAG,"DATA is "+li.getRow1());
+                            Log.e(TAG,"DATA is "+li.getRow2());
+                            Log.e(TAG,"DATA is "+li.getRow3());
+                            Log.e(TAG,"DATA is "+li.getRow4());
+                        }
 
                     }
                 });
@@ -172,15 +181,12 @@ public class DynamicFragment extends Fragment {
 */
         super.setUserVisibleHint(isVisibleToUser);
     }
-    public void getData1(){
-        //Toast.makeText(getActivity(), "this is from fragment", Toast.LENGTH_SHORT).show();
-
+    public ArrayList<MyDataLiust> getData1(){
         Log.e(TAG,"this is from fragment  ==>>"+ data_test);
-       // Log.e(TAG,"this is from fragment"+   ro.getData());
-         ro.saveFrgData();
-
-       /* for(int i =0 ;i<=10;i++){
-            Log.e(TAG,"this is from fragment"+i);
-        }*/
+        Log.e(TAG,"this is from fragment  ==>>"+ isAdded());
+        //Log.e(TAG,"this is from fragment  ==>>"+ dynamicFragment);
+        return MyAdapterRecyclerview.returnData;
     }
+
+
 }

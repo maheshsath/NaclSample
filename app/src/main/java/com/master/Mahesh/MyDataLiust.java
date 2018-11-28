@@ -2,12 +2,22 @@ package com.master.Mahesh;
 
 public class MyDataLiust
 {
-    int val1,val2,val3;
+    int val1;
+    int val2;
+    int val3;
+    int val4;
+
+    public int getVal4() {
+        return val4;
+    }
+
+    public void setVal4(int val4) {
+        this.val4 = val4;
+    }
 
     public int getVal1() {
         return val1;
     }
-
     public void setVal1(int val1) {
         this.val1 = val1;
     }

@@ -33,7 +33,9 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
     String val3 = "0";
     private int total = 0;
     Integer val11 = 0, val22 = 0, val33 = 0, val44;
-    public ArrayList<MyDataLiust> totaldata = new ArrayList<>();
+    public  ArrayList<MyDataLiust> totaldata = new ArrayList<>();
+    public static ArrayList<MyDataLiust> returnData = new ArrayList<>();
+    public  MyAdapterRecyclerview ro;
     int var = 30;
 
     String row1,row2,row3,row4;
@@ -81,6 +83,7 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
         holder.line1.setText(data.get(position));
 
         final MyDataLiust m1 = new MyDataLiust();
+
         holder.e1.addTextChangedListener(new TextWatcher() {
 
 
@@ -109,22 +112,20 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
                     m1.setVal1(val11);
                     //m1.setVal2(val22);
                     // m1.setVal3(val33);
-
-
                     totaldata.add(position, m1);
                     total = doSum(position);
+                    m1.setVal4(total);
+                    totaldata.add(position,m1);
                     holder.e4.setText("" + total);
+
                 } else if (val1.equalsIgnoreCase("")) {
                     val11 = 0;
-
-
                     m1.setVal1(val11);
-                    //m1.setVal2(val22);
-                    //m1.setVal3(val33);
-
 
                     totaldata.add(position, m1);
                     total = doSum(position);
+                    m1.setVal4(total);
+                    totaldata.add(position,m1);
                     holder.e4.setText("" + total);
                 }
             }
@@ -154,10 +155,11 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
                     //m1.setVal1(val11);
                     m1.setVal2(val22);
                     // m1.setVal3(val33);
-
+                    
                     totaldata.add(position, m1);
-
                     total = doSum(position);
+                    m1.setVal4(total);
+                    totaldata.add(position,m1);
                     holder.e4.setText("" + total);
                     Log.e(TAG, "afterTextChanged val22 (!val22.equalsIgnoreCase() ");
                 } else if (val2.equalsIgnoreCase("")) {
@@ -165,10 +167,11 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
                     //m1.setVal1(val11);
                     m1.setVal2(val22);
                     //m1.setVal3(val33);
-
+                    
                     totaldata.add(position, m1);
-
                     total = doSum(position);
+                    m1.setVal4(total);
+                    totaldata.add(position,m1);
                     holder.e4.setText("" + total);
                 }
 
@@ -200,9 +203,12 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
                     //m1.setVal1(val11);
                     //m1.setVal2(val22);
                     m1.setVal3(val33);
+                    
 
                     totaldata.add(position, m1);
                     total = doSum(position);
+                    m1.setVal4(total);
+                    totaldata.add(position,m1);
                     holder.e4.setText("" + total);
                     Log.e(TAG, "afterTextChanged val3 (!val3.equalsIgnoreCase() ");
                 } else if (val3.equalsIgnoreCase("")) {
@@ -211,9 +217,11 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
                     //m1.setVal1(val11);
                     //m1.setVal2(val22);
                     m1.setVal3(val33);
-
+                    
                     totaldata.add(position, m1);
                     total = doSum(position);
+                    m1.setVal4(total);
+                    totaldata.add(position,m1);
                     holder.e4.setText("" + total);
 
                 }
@@ -221,41 +229,54 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
 
             }
         });
+
+
         Log.e(TAG, "size ===>>> " + totaldata.size());
     }
 
     public ArrayList<MyDataLiust> getData() {
-        Log.e(TAG, "Total data list size is " + totaldata.size());
-
-
-
-
-        return totaldata;
+        Log.e(TAG, "Total data list size is " + returnData.size());
+        Log.e(TAG, " data list size is " + returnData.size());
+        return returnData;
     }
 
-    public void saveFrgData() {
+    public void addListToReturn(int val1,int val2,int val3,int val4,int pos){
+        MyDataLiust m = new MyDataLiust();
+        m.setVal1(val1);
+        m.setVal2(val2);
+        m.setVal3(val3);
+        m.setVal4(val4);
 
-
-        /**
-         *  Insert and get data using Database Async way
-         */
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                // Insert Data
-                RowDatabase
-                        .getInstance(context)
-                        .getRowDao()
-                        .insert(new RowEntity(row2,row3,row4));
+        Log.e(TAG,"Size of return List size"+returnData.size());
+        Log.e(TAG,"position to add the data to the list "+pos);
+        if(returnData.size()==0){
+            returnData.add(pos,m);
+        }else{
+            if(pos==0){
+                returnData.remove(pos);
+                returnData.add(pos,m);
+            }else if(pos==1){
+                if(returnData.size()==1){
+                    returnData.add(pos,m);
+                }else{
+                    returnData.remove(pos);
+                    returnData.add(pos,m);
+                }
+            }else{
+                if(returnData.size()==2){
+                    returnData.add(pos,m);
+                }else{
+                    returnData.remove(pos);
+                    returnData.add(pos,m);
+                }
             }
-        });
-
-
-
+        }
     }
+
 
     private int doSum(int position) {
         int sum = totaldata.get(position).getVal1() + totaldata.get(position).getVal2() + totaldata.get(position).getVal3();
+        //addListToReturn(totaldata.get(position).getVal1(),totaldata.get(position).getVal2(),totaldata.get(position).getVal3(),sum,position);
         return sum;
     }
 

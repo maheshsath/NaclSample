@@ -2,6 +2,7 @@ package com.master.Mahesh;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -15,6 +16,10 @@ import android.view.ViewAnimationUtils;
 
 import com.master.Mahesh.callBack.CallBackListener;
 import com.master.Mahesh.callBack.RegisterListener;
+import com.master.Mahesh.room.RowDatabase;
+import com.master.Mahesh.room.RowEntity;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements CallBackListener {
@@ -63,8 +68,13 @@ public class MainActivity extends AppCompatActivity implements CallBackListener 
                 int pos = viewPager.getCurrentItem();
                 DynamicFragment activeFragment = (DynamicFragment) mDynamicFragmentAdapter.getItem(viewPager.getCurrentItem());
 
-                activeFragment.getData1();
-               // RegisterListener r = new RegisterListener();
+                ArrayList<MyDataLiust> data1 = activeFragment.getData1();
+                Log.e(TAG,"List size in main-activity is "+data1.size());
+                saveFrgData(data1);
+
+
+
+                // RegisterListener r = new RegisterListener();
                // mDynamicFragmentAdapter.setmCustomeListener(MainActivity.this);
             }
 
@@ -76,6 +86,28 @@ public class MainActivity extends AppCompatActivity implements CallBackListener 
             }
         });
         setDynamicFragmentToTabLayout();
+    }
+
+    public void saveFrgData(final ArrayList<MyDataLiust> arrayList) {
+
+
+        /**
+         *  Insert and get data using Database Async way
+         */
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                // Insert Data
+                for(int i= 0;i<arrayList.size();i++){
+                    RowDatabase
+                            .getInstance(MainActivity.this)
+                            .getRowDao()
+                            .insert(new RowEntity(String.valueOf(arrayList.get(i).val1),String.valueOf(arrayList.get(i).val2),String.valueOf(arrayList.get(i).val3),String.valueOf(arrayList.get(i).val4)));
+                }
+                MyAdapterRecyclerview.returnData.clear();
+
+            }
+        });
     }
     private void setDynamicFragmentToTabLayout() {
         for (int i = 0; i < 10; i++) {
