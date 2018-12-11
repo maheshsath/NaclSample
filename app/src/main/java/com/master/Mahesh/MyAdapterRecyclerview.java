@@ -11,47 +11,36 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.master.Mahesh.callBack.CallBackListener;
+import com.master.Mahesh.room.RowEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecyclerview.MyViewHolder> {
 
-    public static ArrayList<MyDataLiust> returnData = new ArrayList<>();
     public ArrayList<MyDataLiust> totaldata = new ArrayList<>();
     public MyAdapterRecyclerview ro;
     String TAG = "MyAdapterRecyclerview";
     Context context;
     int item;
     ArrayList<String> data;
-    String val1 = "0";
-    String val2 = "0";
-    String val3 = "0";
-    Integer val11 = 0, val22 = 0, val33 = 0, val44;
-    int var = 30;
-    String row1, row2, row3, row4;
-    MyDataLiust m1;
-    MyDataLiust m2;
-    MyDataLiust m3;
-    private int total = 0;
-    private CallBackListener mCustomeListener;
+    List<RowEntity> prevAvailableList;
+    int editablePosition;
 
-    public MyAdapterRecyclerview(Context context, int lv_harvesting_item, ArrayList<String> hsd) {
+    public MyAdapterRecyclerview(Context context, int lv_harvesting_item, ArrayList<String> hsd, List<RowEntity> prevAvailableList, int editablePosition) {
         this.context = context;
         this.item = lv_harvesting_item;
         this.data = hsd;
-
+        this.prevAvailableList = prevAvailableList;
+        this.editablePosition = editablePosition;
 
         for (int i = 0; i < hsd.size(); i++) {
             MyDataLiust m = new MyDataLiust();
             m.setVal1(0);
             m.setVal2(0);
             m.setVal3(0);
-
             totaldata.add(m);
-
         }
-
 
     }
 
@@ -59,7 +48,7 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(item, parent, false);
-        return new MyViewHolder(v);
+        return new MyAdapterRecyclerview.MyViewHolder(v);
     }
 
     @Override
@@ -68,74 +57,78 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
 
         holder.line1.setText(data.get(position));
 
+        //setting previous data back to the fragment view
+        if (prevAvailableList.size() > 0) {
+            if (!prevAvailableList.get(position).getRow1().equals("0"))
+                holder.e1.setText(prevAvailableList.get(position).getRow1());
 
+            if (!prevAvailableList.get(position).getRow2().equals("0"))
+                holder.e2.setText(prevAvailableList.get(position).getRow2());
+
+            if (!prevAvailableList.get(position).getRow3().equals("0"))
+                holder.e3.setText(prevAvailableList.get(position).getRow3());
+
+            if (!prevAvailableList.get(position).getRow4().equals("0"))
+                holder.et_total.setText(prevAvailableList.get(position).getRow4());
+        }
         holder.e1.addTextChangedListener(new TextWatcher() {
 
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
-
-
                 int data = doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
-                holder.e4.setText("" + data);
+                holder.et_total.setText("" + data);
             }
-
         });
         holder.e2.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
-
-
                 int data = doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
-                holder.e4.setText("" + data);
-
+                holder.et_total.setText("" + data);
             }
         });
         holder.e3.addTextChangedListener(new TextWatcher() {
-
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
-
-
                 int data = doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
-                holder.e4.setText("" + data);
+                holder.et_total.setText("" + data);
 
             }
         });
 
+       /* holder.e1.setFocusable(false);
+        holder.e2.setFocusable(false);
+        holder.e3.setFocusable(false);
+        holder.e1.setFocusableInTouchMode(false);
+        holder.e2.setFocusableInTouchMode(false);
+        holder.e3.setFocusableInTouchMode(false);*/
 
+        if (position == editablePosition) {
+            holder.e1.setFocusable(true);
+            holder.e2.setFocusable(true);
+            holder.e3.setFocusable(true);
+            holder.e1.setFocusableInTouchMode(true);
+            holder.e2.setFocusableInTouchMode(true);
+            holder.e3.setFocusableInTouchMode(true);
+        }
+        doSumPro(position, holder.e1.getText().toString().trim(), holder.e2.getText().toString().trim(), holder.e3.getText().toString().trim());
         Log.e(TAG, "size ===>>> " + totaldata.size());
     }
 
@@ -162,73 +155,52 @@ public class MyAdapterRecyclerview extends RecyclerView.Adapter<MyAdapterRecycle
             m11.setVal3(data3);
         } else {
             m11.setVal3(0);
-
         }
         int data4 = data1 + data2 + data3;
-
-
+        m11.setVal4(data4);
         if (totaldata.size() > 0) {
-
             try {
                 totaldata.remove(position);
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
         totaldata.add(position, m11);
-
         return data4;
-
-
     }
-
-    public ArrayList<MyDataLiust> getData() {
-        Log.e(TAG, "Total data list size is " + returnData.size());
-        Log.e(TAG, " data list size is " + returnData.size());
-        return totaldata;
-    }
-
 
     @Override
     public int getItemCount() {
         return data.size();
     }
-
-
-    @Override
-    public void onViewDetachedFromWindow(MyViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        Log.e(TAG, "onViewDetachedFromWindow");
-        saveData("onViewDetachedFromWindow");
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        Log.e(TAG, "onDetachedFromRecyclerView");
-        saveData("onDetachedFromRecyclerView");
-    }
-
-    private void saveData(String onViewDetachedFromWindow) {
-        Log.e(TAG, "===>>> " + "saveData " + onViewDetachedFromWindow);
-    }
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView line1, e1, e2, e3, e4;
+        TextView line1;
+        EditText e1, e2, e3, e4, e5, e6, e7, e8, e9, et_total;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            line1 = (TextView) itemView.findViewById(R.id.one);
-            e1 = (EditText) itemView.findViewById(R.id.e1);
-            e2 = (EditText) itemView.findViewById(R.id.e2);
-            e3 = (EditText) itemView.findViewById(R.id.e3);
-            e4 = (EditText) itemView.findViewById(R.id.e4);
+            line1 = itemView.findViewById(R.id.one);
+            e1 = itemView.findViewById(R.id.e1);
+            e2 = itemView.findViewById(R.id.e2);
+            e3 = itemView.findViewById(R.id.e3);
+            e3 = itemView.findViewById(R.id.e4);
+            e3 = itemView.findViewById(R.id.e5);
+            e3 = itemView.findViewById(R.id.e6);
+            e3 = itemView.findViewById(R.id.e7);
+            e3 = itemView.findViewById(R.id.e8);
+            e3 = itemView.findViewById(R.id.e9);
+            et_total = itemView.findViewById(R.id.et_total);
         }
     }
 
-}
+    public ArrayList<MyDataLiust> getTotaldata() {
+        return totaldata;
+    }
 
+   /* public void updateReplicationValue(int replicationValue){
+        this.editablePosition = replicationValue;
+    }
+*/
+}

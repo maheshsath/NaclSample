@@ -11,13 +11,15 @@ public class RowEntity {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private  int id;
+    private String tab_position;
     private String row1;
     private   String row2;
     private  String row3;
     private  String row4;
 
 
-    public RowEntity(String row1,String row2, String row3, String row4) {
+    public RowEntity(String tab_position,String row1,String row2, String row3, String row4) {
+        this.tab_position = tab_position;
         this.row1 = row1;
         this.row2 = row2;
         this.row3 = row3;
@@ -31,6 +33,14 @@ public class RowEntity {
 
     public void setId(@NonNull int id) {
         this.id = id;
+    }
+
+    public String getTab_position() {
+        return tab_position;
+    }
+
+    public void setTab_position(String tab_position) {
+        this.tab_position = tab_position;
     }
 
     public String getRow1() {

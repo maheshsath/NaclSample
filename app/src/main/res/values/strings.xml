@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">Tab Layout With Dynamic Fragments</string>
+    <string name="app_name">"NACL"</string>
+
+    <string-array name="array_replication">
+        <item>R1</item>
+        <item>R2</item>
+        <item>R3</item>
+    </string-array>
+
+    <string-array name="array_treatment">
+        <item>Treatment1</item>
+        <item>Treatment2</item>
+        <item>Treatment3</item>
+    </string-array>
 </resources>

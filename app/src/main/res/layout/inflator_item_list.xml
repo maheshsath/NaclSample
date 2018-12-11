@@ -4,68 +4,153 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:layout_weight="1"
-
+    android:layout_weight=".5"
     android:orientation="horizontal">
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="5"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/one"
-
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:text="data"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:minEms="5"
+            android:text="data" />
 
-            android:gravity="center" />
         <EditText
-            android:text=""
             android:id="@+id/e1"
-
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
             android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
-            android:gravity="center" />
         <EditText
             android:id="@+id/e2"
-            android:text=""
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
             android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
-            android:gravity="center" />
         <EditText
             android:id="@+id/e3"
-            android:text=""
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
             android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
-            android:gravity="center" />
         <EditText
             android:id="@+id/e4"
-            android:text=""
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
             android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
-            android:gravity="center" />
+        <EditText
+            android:id="@+id/e5"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
+        <EditText
+            android:id="@+id/e6"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
+        <EditText
+            android:id="@+id/e7"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
+        <EditText
+            android:id="@+id/e8"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
+
+        <EditText
+            android:id="@+id/e9"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
+
+        <EditText
+            android:id="@+id/et_total"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right"
+            android:inputType="number"
+            android:maxLength="5"
+            android:minEms="5"
+            android:text="" />
 
     </LinearLayout>
 </LinearLayout>
-
-
-

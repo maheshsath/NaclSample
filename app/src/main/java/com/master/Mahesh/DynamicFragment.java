@@ -1,6 +1,7 @@
 package com.master.Mahesh;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.master.Mahesh.room.RowDatabase;
@@ -27,10 +27,15 @@ public class DynamicFragment extends Fragment {
     private RecyclerView rv;
     int position;
     ArrayList<MyDataLiust> data;
-   public  MyAdapterRecyclerview ro;
+    public MyAdapterRecyclerview ro;
     private int data_test = 90;
     Context mContext = null;
-
+    private List<RowEntity> prevAvailableList;
+    ArrayList<String> m = new ArrayList<>();
+    TextView tv_treatment;
+    SharedPreferences sp;
+    SharedPreferences.Editor spe;
+    int replicationPosition;
 
     public static DynamicFragment newInstance() {
         return new DynamicFragment();
@@ -47,84 +52,86 @@ public class DynamicFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dynamic_fragment_layout, container, false);
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dynamic_fragment, container, false);
+        sp = getActivity().getSharedPreferences("TreatmentReplicationValue", Context.MODE_PRIVATE);
+        spe = sp.edit();
         initViews(view);
         Log.e(TAG, "onCreateView");
 
         return view;
     }
 
-    private void initViews(View view) {
 
+    private void initViews(final View view) {
         Log.e(TAG, " == >  initViews ");
+
 
         position = getArguments().getInt("position");
         TextView textView = view.findViewById(R.id.commonTextView);
-        ListView ll = view.findViewById(R.id.ll);
+        tv_treatment = view.findViewById(R.id.tv_treatment);
         Button sample = view.findViewById(R.id.sample);
         rv = view.findViewById(R.id.rr);
-        textView.setText(String.valueOf("Category :  " + getArguments().getInt("position")));
 
+        textView.setText(String.valueOf("PLANT :  " + getArguments().getInt("position")));
 
-
-        ArrayList<String> m = new ArrayList<>();
+        prevAvailableList = new ArrayList<>();
+        getPrevDataAsyncTask();
 
         m.add("1");
         m.add("2");
         m.add("3");
 
-/*
-        MyAdpter ma=new MyAdpter(getContext(),m);
-        ll.setAdapter(ma);*/
-
-        ro = new MyAdapterRecyclerview(getContext(), R.layout.inflator_item_list, m);
-
-
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setItemViewCacheSize(m.size());
-        rv.setAdapter(ro);
-
-
 
         sample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                data = ro.getData();
-
-                Log.e(TAG, "data" + data.get(0).getVal1() + "=====" + data.get(0).getVal2() + "======" + data.get(0).getVal3());
-                Log.e(TAG, "data" + data.get(1).getVal1() + "=====" + data.get(1).getVal2() + "======" + data.get(1).getVal3());
-                Log.e(TAG, "data" + data.get(2).getVal1() + "=====" + data.get(2).getVal2() + "======" + data.get(2).getVal3());
-                Log.e(TAG, "data size" + data.size());
-
                 /**
                  *  Insert and get data using Database Async way
                  */
-                /*AsyncTask.execute(new Runnable() {
+                AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
                         // Insert Data
                         List<RowEntity> list = RowDatabase
                                 .getInstance(getActivity().getApplicationContext())
                                 .getRowDao()
-                                .getAllUsers();
+                                .getAllRow();
 
-                        Log.e(TAG,"list size is "+list.size());
-                        Log.e(TAG,"data of first list row3 is  "+list.get(0).getRow1());
+                        Log.e(TAG, "list size is " + list.size());
+                        for (RowEntity li : list) {
 
-                        for(RowEntity li:list){
-                            Log.e(TAG,"DATA is "+li.getRow1());
-                            Log.e(TAG,"DATA is "+li.getRow2());
-                            Log.e(TAG,"DATA is "+li.getRow3());
-                            Log.e(TAG,"DATA is "+li.getRow4());
+                            Log.e(TAG, "Id is  " + li.getId());
+                            Log.e(TAG, "Data of Row1 " + li.getRow1());
+                            Log.e(TAG, "Data of Row2 " + li.getRow2());
+                            Log.e(TAG, "Data of Row3 " + li.getRow3());
+                            Log.e(TAG, "Data of Row4 " + li.getRow4());
+                            Log.e(TAG, "TAB Position of above recode " + li.getTab_position());
                         }
 
                     }
-                });*/
+                });
             }
         });
 
 
+    }
+
+
+    public List<RowEntity> getFrgData(final String tab_position) {
+        // get Data by tab position
+        List<RowEntity> list = RowDatabase
+                .getInstance(getActivity())
+                .getRowDao()
+                .getRowByPositon(tab_position);
+        Log.e(TAG, "List size =>> " + list.size());
+        if (list.size() > 0) {
+            prevAvailableList = list;
+        } else {
+            Log.e(TAG, "Data is not available for this tab position");
+            prevAvailableList.clear();
+        }
+        return prevAvailableList;
     }
 
     @Override
@@ -143,13 +150,18 @@ public class DynamicFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.e(TAG, "onPause");
-
-
+        //Todo on pause we will save later
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        String selectedTreatment = sp.getString("treatment", "");
+        String selectedReplication = sp.getString("replication", "");
+        replicationPosition = sp.getInt("replicationPosition", -1);
+        tv_treatment.setText(selectedTreatment);
+
         Log.e(TAG, "onResume");
         Log.e(TAG, "tab position" + position);
     }
@@ -185,12 +197,55 @@ public class DynamicFragment extends Fragment {
 */
         super.setUserVisibleHint(isVisibleToUser);
     }
-    public ArrayList<MyDataLiust> getData1(){
-        Log.e(TAG,"this is from fragment  ==>>"+ data_test);
-        Log.e(TAG,"this is from fragment  ==>>"+ isAdded());
-        //Log.e(TAG,"this is from fragment  ==>>"+ dynamicFragment);
-        return MyAdapterRecyclerview.returnData;
+
+    public ArrayList<MyDataLiust> getData1() {
+        ArrayList<MyDataLiust> totaldata = ro.getTotaldata();
+        Log.e(TAG, "this is from fragment  ==>>" + data_test);
+        Log.e(TAG, "this is from fragment  ==>>" + isAdded());
+        return totaldata;
     }
 
 
+    /* this code will return data after the data retrive from the database*/
+    private void getPrevDataAsyncTask() {
+        PrevDataAsyncTask prevDataAsyncTask = new PrevDataAsyncTask(new FragmentCallback() {
+
+            @Override
+            public void onTaskDone() {
+                startTaskAfterPrevData();
+            }
+        });
+        prevDataAsyncTask.execute();
+    }
+
+    public interface FragmentCallback {
+        void onTaskDone();
+    }
+
+    private void startTaskAfterPrevData() {
+        Log.e(TAG,"Replication position is =>"+replicationPosition);
+        ro = new MyAdapterRecyclerview(getContext(), R.layout.inflator_item_list, m, prevAvailableList,replicationPosition);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setItemViewCacheSize(m.size());
+        rv.setAdapter(ro);
+    }
+
+    class PrevDataAsyncTask extends AsyncTask<Void, Void, List<RowEntity>> {
+        private DynamicFragment.FragmentCallback mFragmentCallback;
+
+        public PrevDataAsyncTask(DynamicFragment.FragmentCallback fragmentCallback) {
+            mFragmentCallback = fragmentCallback;
+        }
+
+        @Override
+        protected List<RowEntity> doInBackground(Void... params) {
+            prevAvailableList = getFrgData(String.valueOf(position));
+            return prevAvailableList;
+        }
+
+        @Override
+        protected void onPostExecute(List<RowEntity> result) {
+            mFragmentCallback.onTaskDone();
+        }
+    }
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+    android:layout_gravity="center"
+    android:gravity="center"
+    tools:context="com.master.Mahesh.SecondActivity">
+
+    <LinearLayout
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:weightSum="2">
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/sp_replication"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".8"
+            android:entries="@array/array_replication" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/sp_treatment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".8"
+            android:entries="@array/array_treatment" />
+
+        <Button
+            android:id="@+id/btn_go"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".4"
+            android:background="#3F51B5"
+            android:textColor="#fff"
+            android:layout_margin="5dp"
+            android:text="Go" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
